@@ -7,4 +7,7 @@ public class Log {
     public void print(String msg){
         System.out.println("[OK] :"+msg);
     }
+    public void info(String msg){
+        System.out.println("[INFO] :" + msg);
+    }
 }
