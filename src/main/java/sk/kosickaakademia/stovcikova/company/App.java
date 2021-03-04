@@ -22,6 +22,18 @@ public class App
         List<User> list=db.getMales();
         System.out.println(list);
 
+      list = db.getAllUser();
+        printListOfUsers(list);
+
+        List<User> list2 = db.getUsersByAge(20,30);
+        System.out.println(list2);
+
+    }
+
+    private static void printListOfUsers(List<User> list) {
+        for (User user : list){
+            System.out.println(user.toString());
+        }
     }
 
 }
