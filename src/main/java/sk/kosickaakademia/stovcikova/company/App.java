@@ -2,6 +2,7 @@ package sk.kosickaakademia.stovcikova.company;
 
 import sk.kosickaakademia.stovcikova.company.database.Database;
 import sk.kosickaakademia.stovcikova.company.entity.User;
+import sk.kosickaakademia.stovcikova.company.util.Util;
 
 import java.util.List;
 
@@ -13,7 +14,7 @@ public class App
 {
     public static void main( String[] args )
     {
-
+/*
         System.out.println( "Hello World!" );
         Database db=new Database();
         db.insertNewUser(new User("Janko", "Hraško", 10,0));
@@ -27,8 +28,12 @@ public class App
 
         List<User> list2 = db.getUsersByAge(20,30);
         System.out.println(list2);
+*/
+        Util util = new Util();
+        //util.getJson(new Database().getAllUser());
+        System.out.println(util.getJson(new Database().getAllUser()));
+        }
 
-    }
 
     private static void printListOfUsers(List<User> list) {
         for (User user : list){
