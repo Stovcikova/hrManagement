@@ -81,7 +81,52 @@ public class Controller {
            return ResponseEntity.status(400).contentType(MediaType.APPLICATION_JSON).body("Incorrect request");
 
        }
+       List<User> list = new Database().getUsersByAge(from, to);
        String json = new Util().getJson(new Database().getUsersByAge(from, to));
        return ResponseEntity.status(200).contentType(MediaType.APPLICATION_JSON).body(json);
     }
+
+   @PutMapping("/user/{id}")
+    public ResponseEntity<String> changeAge(@PathVariable Integer id, @RequestBody String body){
+        Integer newAge=0;
+        try {
+            JSONObject jsonObject = (JSONObject) (new JSONParser().parse(body));
+            newAge = Integer.parseInt(String.valueOf(jsonObject.get("newAge")));
+            if (newAge==null){
+                return ResponseEntity.status(400).contentType(MediaType.APPLICATION_JSON).body("Error");
+            }
+            boolean result = new Database().changeAge(id, newAge);
+            if (result){
+                return ResponseEntity.status(200).contentType(MediaType.APPLICATION_JSON).body("Update");
+            }else{
+                return ResponseEntity.status(404).contentType(MediaType.APPLICATION_JSON).body("Error");
+            }
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+    @GetMapping("/user")
+    public ResponseEntity<String> getSubstring(@RequestParam(value = "search") String substring){
+        if (substring ==null){
+            return ResponseEntity.status(400).contentType(MediaType.APPLICATION_JSON).body("Error");
+        }
+        List<User> list=new  Database().getUser(substring);
+        if (list ==null || list.isEmpty()){
+            return ResponseEntity.status(400).contentType(MediaType.APPLICATION_JSON).body("List empty");
+        }else {
+            String json = new Util().getJson(list);
+            return ResponseEntity.status(200).contentType(MediaType.APPLICATION_JSON).body(json);
+        }
+    }
+    @GetMapping("/")
+    public ResponseEntity<String> getStatistic(){
+        String json = new Statistic().makeStatistic();
+        if (json ==null){
+            return ResponseEntity.status(400).contentType(MediaType.APPLICATION_JSON).body("Error");
+        }
+        return ResponseEntity.status(200).contentType(MediaType.APPLICATION_JSON).body(json);
+    }
+
+
 }

@@ -35,7 +35,10 @@ public class App
         util.getJson(new Database().getAllUser());
         System.out.println(util.getJson(new Database().getAllUser()));
 
-
+//SpringApplication.run(App.class,args);
+        SpringApplication app = new SpringApplication(App.class);
+        app.setDefaultProperties(Collections.<String, Object>singletonMap("server.port", "8083"));
+        app.run(args);
 
         }
 
