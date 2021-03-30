@@ -1,5 +1,8 @@
 package sk.kosickaakademia.stovcikova.company.database;
 
+import com.mongodb.DB;
+import com.mongodb.Mongo;
+import com.mongodb.MongoClient;
 import sk.kosickaakademia.stovcikova.company.entity.User;
 import sk.kosickaakademia.stovcikova.company.log.Log;
 import sk.kosickaakademia.stovcikova.company.util.Util;
@@ -243,6 +246,9 @@ public class Database {
         }
         return null;
     }
+
+
+
 
 
 }

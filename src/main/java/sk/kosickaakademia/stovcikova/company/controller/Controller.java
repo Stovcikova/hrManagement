@@ -1,6 +1,6 @@
 package sk.kosickaakademia.stovcikova.company.controller;
 
-import com.mysql.cj.xdevapi.JsonParser;
+import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
@@ -8,14 +8,26 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import org.w3c.dom.Attr;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 import sk.kosickaakademia.stovcikova.company.database.Database;
+import sk.kosickaakademia.stovcikova.company.database.DatabaseMongo;
 import sk.kosickaakademia.stovcikova.company.entity.User;
 import sk.kosickaakademia.stovcikova.company.enumerator.Gender;
 import sk.kosickaakademia.stovcikova.company.log.Log;
 import sk.kosickaakademia.stovcikova.company.util.Util;
 
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
+import java.io.*;
 import java.util.List;
-import java.util.Objects;
 
 public class Controller {
     Log log = new Log();
@@ -127,6 +139,83 @@ public class Controller {
         }
         return ResponseEntity.status(200).contentType(MediaType.APPLICATION_JSON).body(json);
     }
+    //xml
+    //users?type=xml
 
+    @GetMapping("/usersss")
+    public ResponseEntity<String>  getAllUsersXML(@RequestParam("type") String xml){
+        if(xml == null || (!xml.equals("xml"))){
+            return ResponseEntity.status(400).contentType(MediaType.APPLICATION_XML).body("Something wrong");
+        }
+
+        List<User> list = new Database().getAllUser();
+
+        String xmlFilePath = "resources/xmlfile.xml";
+        try {
+            DocumentBuilderFactory documentFactory = DocumentBuilderFactory.newInstance();
+            DocumentBuilder documentBuilder = documentFactory.newDocumentBuilder();
+            Document document = documentBuilder.newDocument();
+
+            Element root = document.createElement("users");   //root element
+            document.appendChild(root);
+
+            // person element
+            for(int i = 0; i < list.size(); i++){
+                Element person = document.createElement("user");
+                root.appendChild(person);
+
+                Attr attr = document.createAttribute("id");   // set an attribute to staff element
+                attr.setValue(String.valueOf(list.get(i).getId()));
+                person.setAttributeNode(attr);
+
+                Element firstName = document.createElement("firstname");   // firstname element
+                firstName.appendChild(document.createTextNode(list.get(i).getFname()));
+                person.appendChild(firstName);
+
+                Element lastname = document.createElement("lastname");   // lastname element
+                lastname.appendChild(document.createTextNode(list.get(i).getLname()));
+                person.appendChild(lastname);
+
+            }
+
+            // create the xml file
+            //transform the DOM Object to an XML File
+            TransformerFactory transformerFactory = TransformerFactory.newInstance();
+            Transformer transformer = transformerFactory.newTransformer();
+            DOMSource domSource = new DOMSource(document);
+            StreamResult streamResult = new StreamResult(new File(xmlFilePath));
+
+            // If you use
+            // StreamResult result = new StreamResult(System.out);
+            // the output will be pushed to the standard output ...
+            // You can use that for debugging
+
+            transformer.transform(domSource, streamResult);
+
+            System.out.println("Done creating XML File");
+
+        } catch (ParserConfigurationException pce) {
+            pce.printStackTrace();
+        } catch (TransformerException tfe) {
+            tfe.printStackTrace();
+        }
+
+        //open file xmlfile.xml
+        BufferedReader reader;
+        String line = "";
+        try {
+            reader = new BufferedReader(new FileReader("resources/xmlfile.xml"));
+            line = reader.readLine();
+            System.out.println(line);
+            reader.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        System.out.println("+++++");
+        System.out.println(line);
+        //send line
+        return ResponseEntity.status(200).contentType(MediaType.APPLICATION_XML).body(line);
+
+    }
 
 }

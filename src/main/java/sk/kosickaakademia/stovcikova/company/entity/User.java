@@ -2,15 +2,6 @@ package sk.kosickaakademia.stovcikova.company.entity;
 
 
 import sk.kosickaakademia.stovcikova.company.enumerator.Gender;
-import sk.kosickaakademia.stovcikova.company.log.Log;
-import sk.kosickaakademia.stovcikova.company.util.Util;
-
-import java.io.IOException;
-import java.io.InputStream;
-import java.sql.*;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Properties;
 
 public class User {
     private int id;
@@ -65,8 +56,6 @@ public class User {
                 ", gender=" + gender +
                 '}';
     }
-
-
 }
 
 
